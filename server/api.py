@@ -307,6 +307,9 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass
 
+    def log_req(self, label):
+        print(f"[api] {label} {self.path} from {self.headers.get('Referer') or 'no-referer'}", flush=True)
+
     # ---------- routing ----------
 
     def do_OPTIONS(self):
@@ -319,6 +322,7 @@ class Handler(BaseHTTPRequestHandler):
 
         if len(parts) >= 2 and parts[0] == "api" and parts[1] == "v6":
             endpoint = parts[2] if len(parts) > 2 else ""
+            self.log_req("GET")
             qs = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
             try:
                 if endpoint == "leaderboard":
@@ -344,6 +348,7 @@ class Handler(BaseHTTPRequestHandler):
         parts = parsed.path.lstrip("/").split("/")
         if len(parts) >= 2 and parts[0] == "api" and parts[1] == "v6":
             endpoint = parts[2] if len(parts) > 2 else ""
+            self.log_req("POST")
             form = self._form()
             try:
                 if endpoint == "leaderboard":
