@@ -102,11 +102,11 @@
     };
   }
 
-  function handle(path, query, body) {
+  function handle(path, query, body, isPost) {
     var q = new URLSearchParams(query || "");
     var endpoint = path.split("/").pop();
 
-    if (q.get("__post") === "1") {
+    if (isPost) {
       var form = body;
       // ---- POST /leaderboard ----
       if (endpoint === "leaderboard") {
@@ -328,7 +328,7 @@
     var query = qIndex >= 0 ? path.substring(qIndex + 1) : "";
     var form = parseBody(body);
 
-    handle(pathOnly, query, form).then(
+    handle(pathOnly, query, form, this.__ptMethod === "POST").then(
       function (result) {
         Object.defineProperty(xhr, "status", { value: 200 });
         Object.defineProperty(xhr, "readyState", { value: 4 });
